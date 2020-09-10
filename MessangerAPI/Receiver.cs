@@ -11,6 +11,7 @@ namespace MessangerAPI
 {
     public class Receiver:IReceiver
     {
+        //Add for commit receiver for future use 
         Task _recTask;
         WebSocket _webSocket;
         public Receiver(WebSocket webSocket)
