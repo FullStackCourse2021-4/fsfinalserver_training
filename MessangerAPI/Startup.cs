@@ -31,8 +31,10 @@ namespace MessangerAPI
         {
             //For Source control
             services.AddControllers();
+            #region addServices
             services.AddTransient<ISocket, WebSocketAdapter>();
             services.AddSingleton<IMessanger, WebSocketMessangerAdapter>();
+            #endregion
 
         }
 
@@ -43,8 +45,10 @@ namespace MessangerAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-           
+#region usewebsockets
             app.UseWebSockets();
+            #endregion
+#region usefunction
             app.Use(async (context, next) =>
             {
                 if (context.Request.Path == "/ws")
@@ -52,13 +56,17 @@ namespace MessangerAPI
                     if (context.WebSockets.IsWebSocketRequest)
                     {
                         WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                        var id = context.Request.Query["id"];
+                        #region MessangerInfraStructure
                         var messanger = app.ApplicationServices.GetService<IMessanger>();
+                        var id = context.Request.Query["id"];
                         var webSocketAdapter = new WebSocketAdapter();
                         webSocketAdapter.Socket = webSocket;
                         await messanger.Add(id, webSocketAdapter);
                         await messanger.Send(id,new MessageBody() { Code="1234" });
+                        #endregion
                         await webSocket.ReceiveAsync(new Memory<byte>(), CancellationToken.None);
+                        
+
 
                     }
                     else
@@ -71,10 +79,10 @@ namespace MessangerAPI
                     await next();
                 }
             });
-                
+
+            #endregion
 
 
-            
             app.UseHttpsRedirection();
 
             app.UseRouting();

@@ -16,9 +16,10 @@ namespace MessangerAPI.Controllers
     {
         IMessanger _messanger;
         ILogger<SenderController> _logger;
-        public SenderController(IMessanger messanger)
+        public SenderController(IMessanger messanger, ILogger<SenderController> logger)
         {
             _messanger = messanger;
+            _logger = logger;
         }
        
         
